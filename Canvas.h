@@ -5,8 +5,6 @@
 #include <vector>
 #include <memory>
 
-#include <SFML/Graphics.hpp>
-
 #include "Drawable.h"
 #include "Units.h"
 
