@@ -7,7 +7,6 @@
 
 
 #include "Turtle.h"
-#include "square.h"
 #include "Drawable.h"
 #include "window.h"
 using namespace Turt;
