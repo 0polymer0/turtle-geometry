@@ -61,13 +61,13 @@ void Thing(Turtle& t){
 }
 
 void Circle(Turtle& t){
-	Repeat(360,[&]{
-	//while (true){
+	//Repeat(360,[&]{
+	while (true){
 		t.forward(3);
 		t.right(1);
-		//wait(milliseconds{ 2 });
-	//}
-	});
+		wait(milliseconds{ 2 });
+	}
+	//});
 }
 
 void Circles(Turtle& t){
@@ -173,12 +173,13 @@ int main(){
 	const int screen_height = 600;
 	Canvas can{};
 	point first_point = { screen_width / 2, screen_height };
-	Turtle t{ can, first_point, 270};
-	window win(screen_width, screen_height); //clear what the dependece is
-	
+	Turtle t{ can, first_point, 270 };
+	window win{ screen_width, screen_height }; //clear what the dependece is
+	Graphics graphic(200, 300);
+	t.draw(graphic);
 	win.add_drawable(can);
 	win.add_drawable(t);
 
-	tree(t, 400);
-
+	//tree(t, 400);
+	Circle(t);
 }

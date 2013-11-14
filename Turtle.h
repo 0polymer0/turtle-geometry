@@ -24,17 +24,19 @@ public:
 		position(init_position),
 		//speed{init_speed},
 		Angle{init_angle},	
-		
-		turtle_resource{},
 
 		turtle_image{ "TurtleAlpha.png" }, //TODO: Magic literal
 		bPenDown{ true }
 	{}
 
+	void draw(Graphics& graphics) const{
+		graphics.draw_Image(turtle_image);
+	}
+
 	void forward(Units distance){
 		point old_position = position;
 		//if (speed <= 0){ //negative values are unbounded speeds.
-			std::lock_guard<std::mutex> lck{ turtle_resource };
+			
 			position.x += distance * cosD(Angle);
 			position.y += distance * sinD(Angle);
 		//}
@@ -61,38 +63,30 @@ public:
 	      }while (elapsed_distance < distance);
 	  }*/
 
-		if (bPenDown){
-			//std::lock_guard<std::mutex> lck{ turtle_resource };
+		if (bPenDown)
 			canvas.draw_line(old_position, position);
-		}
-
+		
+		turtle_image.set_position(position);
 	}
 	
 	void right(Degrees angle){
-		std::lock_guard<std::mutex> lck{ turtle_resource };
 		Angle += angle;
 		Angle = fmod(Angle, 360.0);
+		turtle_image.set_rotation(Angle);
+		
 	}
 	
 	void left(Degrees angle){
 		right(-angle);
 	}
-	void PenDown(){ 
-		std::lock_guard<std::mutex> lck{ turtle_resource };
+	void PenDown(){ 	
 		bPenDown = true; 
 	}
 	void PenUp(){
-		std::lock_guard<std::mutex> lck{ turtle_resource };
 		bPenDown = false;
 	}
 
-	friend void draw(Turtle& t, Graphics& graphics){
-		std::lock_guard<std::mutex> lck{ t.turtle_resource };
 
-		t.turtle_image.set_position(t.position);
-		t.turtle_image.set_rotation(t.Angle);
-		graphics.draw_Image(t.turtle_image);
-	}
 
 private:	
 	
@@ -100,8 +94,6 @@ private:
 	point position;
 	//Speed speed;
 	Degrees Angle;
-
-	std::mutex turtle_resource;
 
 	image turtle_image;
 	bool bPenDown;

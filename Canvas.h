@@ -24,12 +24,11 @@ public:
 	  lines.push_back(new_line);
 	}
 
-	friend void draw(
-	  const Canvas& can, 
-	  Graphics& graphics){
+	void draw(
+	  Graphics& graphics) const{
 
-	  std::lock_guard<std::mutex> lck{ can.canvas_resource };
-	  graphics.draw_Lines( can.lines );
+	  std::lock_guard<std::mutex> lck{ canvas_resource };
+	  graphics.draw_Lines( lines );
 	}
 
 private:

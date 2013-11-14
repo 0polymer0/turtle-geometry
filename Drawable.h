@@ -58,8 +58,9 @@ public:
 		_frame.setRotation(degree);
 	}
 	float get_height(){
-		 sf::FloatRect rectangle = _frame.getGlobalBounds();
-		 return rectangle.height;
+		std::lock_guard<std::mutex> lk{ image_resource_ };
+		sf::FloatRect rectangle = _frame.getGlobalBounds();
+		return rectangle.height;
 	}
 	explicit operator sf::Sprite(){
 		std::lock_guard<std::mutex> lk{ image_resource_ };
@@ -141,14 +142,12 @@ private:
 class Drawable_ref{
 public:
 	template<typename T>
-	Drawable_ref(T& x) : 
-		//polymorphic_resource{},
-		self_{ std::make_shared<model<T>>(&x) }{}
-	//template<typename T>
-	//Drawable_ref(const T& x) = delete;
-	friend void draw(const Drawable_ref& dr, Graphics& g){
-	//	std::unique_lock<std::mutex> {dr.polymorphic_resource};
-		dr.self_->draw_(g);
+	Drawable_ref(const T& x) : 
+		self_{ std::make_shared<model<const T>>(&x) }
+	{}
+
+	void draw( Graphics& g) const{
+		self_->draw_(g);
 	}
 
 private:
@@ -158,21 +157,18 @@ private:
 	};
 	template<typename T>
 	struct model : concept{
-		model(T* x) : 	
-			//polymorphic_resource{},
-			data_{ x } {}
+		model(const T * x) : 	
+			data_{ x } 
+		{}
 
 		void draw_(Graphics& g) const{	
-          //  std::unique_lock<std::mutex> lck(polymorphic_resource);
-			
-			draw(*data_, g);
+			//draw(*data_, g);
+			data_->draw(g);
 		}
 
-		//mutable std::mutex polymorphic_resource;
-		T* data_;
+		const T * data_;
 	};
 
-	//mutable std::mutex polymorphic_resource;
 	std::shared_ptr<const concept> self_;
 };
 

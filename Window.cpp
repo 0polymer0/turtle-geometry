@@ -22,8 +22,10 @@ draw_drawables(sf::RenderWindow& window, Graphics& graphics){
 	//if (!isDrawing) return;
 	unique_lock<mutex> lck(window_resources);
 	if (!draw_stack.empty()){
-	  for (const auto& drawItem : draw_stack)
-	    draw(drawItem, graphics);
+		for (const auto& drawItem : draw_stack){
+			//draw(drawItem, graphics);
+			drawItem.draw(graphics);
+		}
 	  sf::Sprite to_draw = graphics.render_Graphics();
 	  window.draw(to_draw);
 	}
